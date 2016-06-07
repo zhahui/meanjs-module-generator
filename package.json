@@ -1,0 +1,21 @@
+{
+  "name": "mean-module-generator",
+  "description": "Generate CRUD module for MEAN",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Hui Zha",
+  "license": "Proprietary",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/zhahui/mean-module-generator.git"
+  },
+  "engines": {
+    "node": ">=0.12.0",
+    "npm": ">=2.0.0"
+  },
+  "dependencies": {
+    "ncp": "^2.0.0",
+    "renamer": "^0.5.7",
+    "replace": "^0.3.0"
+  }
+}
