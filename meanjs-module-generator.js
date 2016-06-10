@@ -1,52 +1,55 @@
-var fs = require('fs');
-var replace = require('replace');
-var ncp = require('ncp').ncp;
+var fs = require('fs-extra');
 var exec = require('child_process').exec;
+var replace = require('replace');
 
-var output_dir = 'output/patients';
+// name of the source module
+var sourceModuleName = 'article';
+var sourceModuleNameUpperCase = 'Article';
 
-fs.access(output_dir, fs.F_OK, function(err) {
-    if (!err) {
-        console.error('output directory exists.');
-        process.exit();
-    }
-});
+// name of the target module to generate
+var targetModuleName = 'patient';
+var targetModuleNameUpperCase = 'Patient';
+
+// base output directory to store all generated modules
+var OUTPUT_BASE_DIR = 'output';
+
+// target module directory
+var targetModuleDir = OUTPUT_BASE_DIR + '/' + targetModuleName + 's';
 
 // make a copy of the "article" module
-ncp('articles', output_dir, function(err) {
+fs.copySync(sourceModuleName + 's', targetModuleDir);
+console.log('>>> copied "' + sourceModuleName + '" module to "' + targetModuleName + '" module.');
+
+// rename files
+console.log('>>> renaming files: ' + sourceModuleName + ' -> ' + targetModuleName);
+var renameCmd = '"node_modules/.bin/renamer" -v --find "' + sourceModuleName + '" --replace "' + targetModuleName + '" ' + targetModuleDir + '/**/*';
+exec(renameCmd, function (err, stdout, stderr) {
     if (err) {
         console.error(err);
         process.exit();
     }
-    console.log('copied "articles" module to "' + output_dir + '" module.');
+    console.log(stdout);
+    console.log(">>> renaming files completed.");
 
-    // rename file names
-    var rename_cmd = '"node_modules/.bin/renamer" -v --find "article" --replace "patient" ' + output_dir + '/**/*';
-    exec(rename_cmd, function (err, stdout, stderr) {
-        if (err) {
-            console.error(err);
-            process.exit();
-        }
-        console.log(stdout);
-        console.log("renaming files completed.");
-
-        // replace names in files
-        replace({
-            regex: "Article",
-            replacement: "Patient",
-            paths: [output_dir],
-            recursive: true,
-            silent: true,
-        });
-
-        replace({
-            regex: "article",
-            replacement: "patient",
-            paths: [output_dir],
-            recursive: true,
-            silent: true,
-        });
-        console.log("replacing names in files completed.");
-        console.log("All done!");
+    // replace module names in files
+    console.log(">>> replacing module names in file ...");
+    console.log(sourceModuleName + ' -> ' + targetModuleName);
+    replace({
+        regex: sourceModuleName,
+        replacement: targetModuleName,
+        paths: [targetModuleDir],
+        recursive: true,
+        silent: true
     });
+
+    console.log(sourceModuleNameUpperCase + ' -> ' + targetModuleNameUpperCase);
+    replace({
+        regex: sourceModuleNameUpperCase,
+        replacement: targetModuleNameUpperCase,
+        paths: [targetModuleDir],
+        recursive: true,
+        silent: true
+    });
+    console.log(">>> replacing module names in files completed.");
+    console.log('>>> new module "' + targetModuleName + '" has been successfully generated. All done!');
 });

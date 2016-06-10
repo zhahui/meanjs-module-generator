@@ -14,7 +14,7 @@
     "npm": ">=2.0.0"
   },
   "dependencies": {
-    "ncp": "^2.0.0",
+    "fs-extra": "^0.30.0",
     "renamer": "^0.5.7",
     "replace": "^0.3.0"
   }
