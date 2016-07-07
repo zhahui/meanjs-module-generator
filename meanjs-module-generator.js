@@ -2,13 +2,20 @@ var fs = require('fs-extra');
 var exec = require('child_process').exec;
 var replace = require('replace');
 
+// get the real arguments
+var args = process.argv.slice(2);
+if (args.length != 2) {
+    console.log('Usage: $ node mean-module-generator.js targetModuleName TargetModuleNameUpperCase')
+    process.exit();
+}
+
 // name of the source module
 var sourceModuleName = 'article';
 var sourceModuleNameUpperCase = 'Article';
 
 // name of the target module to generate
-var targetModuleName = 'patient';
-var targetModuleNameUpperCase = 'Patient';
+var targetModuleName = args[0];
+var targetModuleNameUpperCase = args[1];
 
 // base output directory to store all generated modules
 var OUTPUT_BASE_DIR = 'output';
